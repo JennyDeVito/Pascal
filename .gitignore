@@ -1,0 +1,98 @@
+# ========================================
+# Jenny's Pascal Projects (.gitignore)
+# Compatível com:
+#   - Free Pascal (fpc)
+#   - Lazarus IDE
+#   - VS Code + extensão Pascal
+#   - Linux Mint / Ubuntu
+# ========================================
+
+# 🔹 Compilados e objetos
+*.o
+*.ppu
+*.ppl
+*.a
+*.so
+*.dll
+*.exe
+*.out
+
+# 🔹 Arquivos de debug, logs e temporários
+*.dbg
+*.bak
+*.tmp
+*.log
+*.swp
+*.compiled
+*.cfg
+*.rsj
+*.dcu
+*.dcp
+*.dpu
+
+# 🔹 Backups automáticos do editor
+*~
+*.lpr~
+*.pas~
+*.pp~
+*.bak
+*.old
+
+# 🔹 Diretórios comuns de compilação e build
+/bin/
+/obj/
+/lib/
+/backup/
+/build/
+/dist/
+/output/
+/units/
+
+# 🔹 Arquivos e caches do Lazarus IDE
+*.lps
+*.lpi
+*.ico
+*.res
+*.compiled
+*.manifest
+*.identcache
+*.opendialog
+*.compiled
+
+# 🔹 Diretórios criados pelo Lazarus
+/lib/
+/backup/
+/backuplib/
+/tmp/
+
+# 🔹 Diretórios e caches de IDEs modernas
+.vscode/
+.idea/
+*.user
+*.workspace
+
+# 🔹 Arquivos do sistema (macOS / Windows)
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 🔹 Arquivos executáveis sem extensão (Linux)
+*.
+
+# 🔹 Ignorar binários dentro de subpastas (como Pascal-Fatec/)
+Pascal-Fatec/*
+# ...mas permitir os fontes Pascal dentro dela
+!Pascal-Fatec/**/*.pas
+
+# 🔹 Manter apenas código-fonte e docs importantes
+!*.pas
+!*.pp
+!*.lpr
+!*.lfm
+!*.inc
+!*.txt
+!*.md
+!.gitignore
+
+# 🔹 Manter as pastas de código
+!Pascal-Fatec/
