@@ -1,4 +1,4 @@
-program ContaPilha;
+program PilhaContaElementos;
 {recebe os elementos de uma pilha e retorna seu tamanho}
 
 uses crt;
@@ -57,10 +57,10 @@ begin
         IsEmpty := true;
     end
     else
-    begin
-        IsEmpty := false;
+        begin
+            IsEmpty := false;
+        end;
     end;
-end;
 
 {retorna o total de elementos da pilha}
 function ContaPilha(p6 : pilha) : integer;
