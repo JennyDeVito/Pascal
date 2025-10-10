@@ -96,3 +96,8 @@ Pascal-Fatec/*
 
 # 🔹 Manter as pastas de código
 !Pascal-Fatec/
+
+# GNU Global index
+GTAGS
+GRTAGS
+GPATH
