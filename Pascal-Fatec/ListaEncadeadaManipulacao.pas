@@ -293,27 +293,38 @@ end;
 
 {STACK + LISTS - FUNCTIONS AND PROCEDURES - PascalCase}
 {procedure that empties a stack to fill a list}
-procedure PreencheListaComPilha(var p: Pilha; listaEncadeada: EnderecoNo);
+procedure EsvaziaPilhaParaLista(var p: Pilha; listaEncadeada: EnderecoNo);
 var
     novoNo, noAuxiliar: EnderecoNo;
 begin
-    new(listaEncadeada);
-    novoNo := listaEncadeada;
     if(IsEmpty(p)) then
         writeln('A pilha está vazia!')
     else
     begin
-        novoNo^.Dado := p.Elementos[p.Posicao];
-        novoNo^.ProximoNo := nil;
-        Pop(p);
-        while(IsEmpty(p) <> true) do
+        // enquanto a pilha tiver elementos, faça
+        while (IsEmpty(p) <> true) do
         begin
-            new(noAuxiliar);
-            noAuxiliar^.Dado := p.Elementos[p.Posicao];
-            noAuxiliar^.ProximoNo := nil;
+            // crie um novo nó, acrescente o topo da pilha e nil no próximo nó
+            new(novoNo);
+            novoNo^.Dado := p.Elementos[p.Posicao];
+            novoNo^.ProximoNo := nil;
+            // nó auxiliar recebe o head da lista principal
+            noAuxiliar := listaEncadeada;
+            // se a lista estiver vazia ela recebe o novo nó
+            if (noAuxiliar = nil) then
+                noAuxiliar := novoNo
+                // se já tiver elementos busca o próximo nó = nil
+            else
+            begin
+                while (noAuxiliar^.ProximoNo <> nil) do
+                begin
+                    noAuxiliar := noAuxiliar^.ProximoNo;
+                end;
+                // quando próximo nó = nil recebe o novo nó
+                noAuxiliar^.ProximoNo := novoNo;
+            end;
+            // retira o último elemento da pilha
             Pop(p);
-            novoNo^.ProximoNo := noAuxiliar;
-            novoNo := noAuxiliar;
         end;
     end;
 end;
@@ -373,23 +384,33 @@ Begin
     writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
     writeln();
 
-    // Init(stack);
-    // stackSize := 0;
-    // stackMaximumSize := 100;
-    // Push(stack, 8);
-    // Push(stack, 12);
-    // Push(stack, 46);
-    // Push(stack, 98);
-    // Push(stack, 0);
-    // Push(stack, 21);
-    // Push(stack, 9);
-    // Push(stack, -11);
-    // Push(stack, -1);
-    // Push(stack, -3);
-    // stackSize := stack.Posicao;
-    // writeln('Tamanho da pilha: ', stackSize);
-    // ImprimePilha(stack);
+    Init(stack);
+    stackSize := 0;
+    stackMaximumSize := 100;
+    Push(stack, 8);
+    Push(stack, 12);
+    Push(stack, 46);
+    Push(stack, 98);
+    Push(stack, 0);
+    Push(stack, 21);
+    Push(stack, 9);
+    Push(stack, -11);
+    Push(stack, -1);
+    Push(stack, -3);
+    stackSize := stack.Posicao;
+    writeln('Tamanho da pilha: ', stackSize);
+    writeln();
 
+    ImprimePilha(stack);
+    writeln();
+
+    EsvaziaPilhaParaLista(stack, lista);
+
+    ImprimeListaEncadeada(lista);
+    writeln();
+
+    ImprimePilha(stack);
+    writeln();
 
     // debug start
     // dúvida: como usar essa função? porque, do modo como eu a usei aqui sempre será true
