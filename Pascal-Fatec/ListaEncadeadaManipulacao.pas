@@ -14,12 +14,15 @@ program ListaEncadeadaManipulacao;
     Push
     Pop
     ImprimePilha
-    ContaLista
+    ContaListaEncadeada
     ContaNegativosLista
     InsereNoFim
     InsereNoInicio
+    InsereInicioFimConta
+    InsereQuarta
+    InsereAposPar
     ImprimeListaEncadeada
-    PreencheListaComPilha
+    EsvaziaPilhaParaLista
 }
 
 // explanation 1: fpc isn't accepting node and stack declared together
@@ -43,9 +46,10 @@ end;
 {VARIABLES TO USE IN THE PROGRAM - camelCase}
 var
     lista: EnderecoNo;
+    // tamanhoLista: integer;
     stack: Pilha;
-    stackSize, stackMaximumSize, tamanhoLista: integer;
-    stackDebbuger: boolean;
+    // stackSize, stackMaximumSize: integer;
+    // stackDebbuger: boolean;
     // a: integer; // debug
 
 {STACK - FUNCTIONS AND PROCEDURES - PascalCase}
@@ -309,7 +313,6 @@ end;
 procedure InsereAposPar(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo, noAuxiliar, noSecundario: EnderecoNo;
-    contador: integer;
 begin
     // prepara os novos nós
     new(novoNo);
@@ -359,6 +362,64 @@ begin
             writeln('A lista não tem nós com valores pares.');
             writeln('Nada foi acrescentado.');
             writeln();
+        end;
+    end;
+end;
+
+{Aula 14 - Exclui o último nó da lista encadeada}
+procedure ExcluiFinalLista(var listaEncadeada: EnderecoNo);
+var
+    inicioLista, noAuxiliar, noSecundario: EnderecoNo;
+begin
+    inicioLista := listaEncadeada;
+    if (inicioLista = nil) then
+    begin
+        writeln('A lista já está vazia - não há o que apagar!')
+    end
+    else
+    begin
+        // se o primeiro nó for o único da lista eu apago
+        if (iniciolista^.ProximoNo = nil) then
+        begin
+            dispose(inicioLista);
+            inicioLista := nil;
+            // e devolvo para a lista original - IMPORTANTE!
+            listaEncadeada := inicioLista;
+        end
+        // senão jogo no nó auxiliar
+        else
+        begin
+            noAuxiliar := iniciolista^.ProximoNo;
+            // se o segundo nó for o último
+            if (noAuxiliar^.ProximoNo = nil) then
+            begin
+                iniciolista^.ProximoNo := nil;
+                dispose(noAuxiliar);
+            end
+            else
+            begin
+                noSecundario := noAuxiliar^.ProximoNo;
+                // se o terceiro nó for o último
+                if (noSecundario^.ProximoNo = nil) then
+                begin
+                    noAuxiliar^.ProximoNo := nil;
+                    dispose(noSecundario);
+                end
+                else
+                begin
+                    // se o terceiro não for o último um laço percorre a lista
+                    while (noSecundario^.ProximoNo <> nil) do
+                    begin
+                        noSecundario := noSecundario^.ProximoNo;
+                        noAuxiliar := noAuxiliar^.ProximoNo;
+                    end;
+                    // o laço termina quando noSecundario^.ProximoNo = nil, então
+                    // o penúltimo nó perde a referência para o último nó
+                    noAuxiliar^.ProximoNo := nil;
+                    // o último nó é apagado
+                    dispose(noSecundario);
+                end;
+            end;
         end;
     end;
 end;
@@ -439,16 +500,16 @@ Begin
     lista := nil;
     InsereNoFim(lista, 51);
     InsereNoFim(lista, 61);
+    // // ImprimeListaEncadeada(lista);
+    InsereNoFim(lista, -17);
+    InsereNoFim(lista, -2);
     // ImprimeListaEncadeada(lista);
-    // InsereNoFim(lista, -17);
-    // InsereNoFim(lista, -2);
-    // ImprimeListaEncadeada(lista);
-    // InsereNoInicio(lista, 5);
-    // InsereNoInicio(lista, 25);
-    // InsereNoInicio(lista, 0);
-    // InsereNoFim(lista, 1);
-    // InsereNoFim(lista, 5);
-    // InsereNoFim(lista, 205);
+    InsereNoInicio(lista, 5);
+    InsereNoInicio(lista, 25);
+    InsereNoInicio(lista, 0);
+    InsereNoFim(lista, 1);
+    InsereNoFim(lista, 5);
+    InsereNoFim(lista, 205);
     // ImprimeListaEncadeada(lista);
     // writeln();
 
@@ -517,9 +578,14 @@ Begin
     // ImprimePilha(stack);
     // writeln();
 
-    InsereQuarta(lista, 1023);
+    // InsereQuarta(lista, 1023);
 
     InsereAposPar(lista, 48);
+
+    ImprimeListaEncadeada(lista);
+    writeln();
+
+    ExcluiFinalLista(lista);
 
     ImprimeListaEncadeada(lista);
     writeln();
