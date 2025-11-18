@@ -1,15 +1,16 @@
-program NameInPascalCase
+program NameInPascalCase;
 
 uses
     {bibliotecas}
 
+{PascalCase}
 type
-    {criar tipos} {PascalCase}
+
 end;
 
-{declarar variaveis} {camelCase}
+// VARIÁVEIS {camelCase}
 var
-    
+
 
 // PROCEDURES {PascalCase}
 
@@ -17,5 +18,5 @@ var
 
 // MAIN PROGRAM
 Begin
-    
-End;
+
+End.

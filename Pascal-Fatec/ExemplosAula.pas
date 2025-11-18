@@ -35,7 +35,7 @@ FUNCTION ISEMPTY(pi: PILHA) : boolean;
 begin
     if(pi.TOPO = 0) then
         ISEMPTY := true
-    else 
+    else
         ISEMPTY := false;
 end;
 
@@ -140,7 +140,7 @@ var q, aux: ENDNODO;
 begin
     new(head);
     q := head;
-    if (ISEMPTY(pi)) then 
+    if (ISEMPTY(pi)) then
         writeln('A pilha está vazia')
     else
     begin

@@ -1,10 +1,10 @@
 program PilhaContaElementos;
 {recebe os elementos de uma pilha e retorna seu tamanho}
 
-uses crt;
+// uses crt;
 
 {cria a pilha}
-type 
+type
     vetor = array[1..100] of integer;
     pilha = record
         posicao : integer;
@@ -12,7 +12,7 @@ type
 end;
 
 // VARIAVEIS
-var 
+var
     stack : pilha;
     contador, entrada : integer;
 
@@ -87,6 +87,6 @@ Begin
         end;
         Push(stack, entrada);
     end;
-    
+
     writeln('A lista tem ', ContaPilha(stack), ' elementos.');
 End.
