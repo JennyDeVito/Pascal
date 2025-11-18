@@ -258,6 +258,51 @@ begin
     InsereInicioFimConta := contador;
 end;
 
+{Aula #13 - insere na quarta posição ou antes - o que vier primeiro}
+procedure InsereQuarta(var listaEncadeada: EnderecoNo; n: integer);
+var
+    novoNo, noAuxiliar, noSecundario: EnderecoNo;
+    contador: integer;
+begin
+    // prepara o novo nó
+    new(novoNo);
+    novoNo^.Dado := n;
+    novoNo^.ProximoNo := nil;
+    noAuxiliar := listaEncadeada;
+    contador := 1;
+    if (noAuxiliar = nil) then
+    begin
+        noAuxiliar := novoNo;
+        listaEncadeada := noAuxiliar;
+    end
+    else
+    begin
+        // percorre a lista até chegar em nil ou no terceiro nó
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            if (contador = 3) then
+            begin
+                break;
+            end;
+            noAuxiliar := noAuxiliar^.ProximoNo;
+            contador := contador + 1;
+        end;
+        if (noAuxiliar^.ProximoNo = nil) then
+        begin
+            noAuxiliar^.ProximoNo := novoNo
+        end
+        else
+        begin
+            // recebe o endereço do quarto nó atual
+            noSecundario := noAuxiliar^.ProximoNo;
+            // endereço do quarto nó recebe o novo nó
+            noAuxiliar^.ProximoNo := novoNo;
+            // novo nó recebe o restante da lista
+            novoNo^.ProximoNo := noSecundario;
+        end;
+    end;
+end;
+
 {imprime lista encadeada}
 procedure ImprimeListaEncadeada(listaEncadeada: EnderecoNo);
 var
@@ -333,87 +378,93 @@ end;
 Begin
     lista := nil;
     InsereNoFim(lista, 42);
-    InsereNoFim(lista, 63);
-    ImprimeListaEncadeada(lista);
-    InsereNoFim(lista, -17);
-    InsereNoFim(lista, -2);
-    ImprimeListaEncadeada(lista);
-    InsereNoInicio(lista, 5);
-    InsereNoInicio(lista, 25);
-    InsereNoInicio(lista, 0);
-    InsereNoFim(lista, 1);
-    InsereNoFim(lista, 5);
-    InsereNoFim(lista, 205);
-    ImprimeListaEncadeada(lista);
-    writeln();
+    // InsereNoFim(lista, 63);
+    // ImprimeListaEncadeada(lista);
+    // InsereNoFim(lista, -17);
+    // InsereNoFim(lista, -2);
+    // ImprimeListaEncadeada(lista);
+    // InsereNoInicio(lista, 5);
+    // InsereNoInicio(lista, 25);
+    // InsereNoInicio(lista, 0);
+    // InsereNoFim(lista, 1);
+    // InsereNoFim(lista, 5);
+    // InsereNoFim(lista, 205);
+    // ImprimeListaEncadeada(lista);
+    // writeln();
 
-    if ((ContaNegativosLista(lista) = -1)) then
-    begin
-        writeln('A lista está vazia!');
-        writeln();
-    end
-    else if ((ContaNegativosLista(lista) = 0)) then
-    begin
-        writeln('A lista não tem nós negativos.');
-        writeln();
-    end
-    else
-    begin
-        write('A lista possui: ');
-        writeln(ContaNegativosLista(lista), ' nós negativos.');
-        writeln();
-    end;
+    // if ((ContaNegativosLista(lista) = -1)) then
+    // begin
+    //     writeln('A lista está vazia!');
+    //     writeln();
+    // end
+    // else if ((ContaNegativosLista(lista) = 0)) then
+    // begin
+    //     writeln('A lista não tem nós negativos.');
+    //     writeln();
+    // end
+    // else
+    // begin
+    //     write('A lista possui: ');
+    //     writeln(ContaNegativosLista(lista), ' nós negativos.');
+    //     writeln();
+    // end;
 
-    if ((ContaListaEncadeada(lista) = -1)) then
-    begin
-        writeln('A lista está vazia!');
-        writeln();
-    end
-    else
-    begin
-        write('A lista possui: ');
-        writeln(ContaListaEncadeada(lista), ' nós.');
-        writeln();
-    end;
+    // if ((ContaListaEncadeada(lista) = -1)) then
+    // begin
+    //     writeln('A lista está vazia!');
+    //     writeln();
+    // end
+    // else
+    // begin
+    //     write('A lista possui: ');
+    //     writeln(ContaListaEncadeada(lista), ' nós.');
+    //     writeln();
+    // end;
 
-    tamanhoLista := InsereInicioFimConta(lista, 18);
+    // tamanhoLista := InsereInicioFimConta(lista, 18);
 
-    ImprimeListaEncadeada(lista);
-    writeln();
+    // ImprimeListaEncadeada(lista);
+    // writeln();
 
-    writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
-    writeln();
+    // writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
+    // writeln();
 
     Init(stack);
-    stackSize := 0;
-    stackMaximumSize := 100;
-    Push(stack, 8);
-    Push(stack, 12);
-    Push(stack, 46);
-    Push(stack, 98);
-    Push(stack, 0);
-    Push(stack, 21);
-    Push(stack, 9);
-    Push(stack, -11);
-    Push(stack, -1);
-    Push(stack, -3);
-    stackSize := stack.Posicao;
-    writeln('Tamanho da pilha: ', stackSize);
-    writeln();
+    // stackSize := 0;
+    // stackMaximumSize := 100;
+    // Push(stack, 8);
+    // Push(stack, 12);
+    // Push(stack, 46);
+    // Push(stack, 98);
+    // Push(stack, 0);
+    // Push(stack, 21);
+    // Push(stack, 9);
+    // Push(stack, -11);
+    // Push(stack, -1);
+    // Push(stack, -3);
+    // stackSize := stack.Posicao;
+    // writeln('Tamanho da pilha: ', stackSize);
+    // writeln();
 
-    ImprimePilha(stack);
-    writeln();
+    // ImprimePilha(stack);
+    // writeln();
 
-    EsvaziaPilhaParaLista(stack, lista);
+    // EsvaziaPilhaParaLista(stack, lista);
+
+    // ImprimeListaEncadeada(lista);
+    // writeln();
+
+    // ImprimePilha(stack);
+    // writeln();
+
+    InsereQuarta(lista, 1024);
 
     ImprimeListaEncadeada(lista);
-    writeln();
-
-    ImprimePilha(stack);
     writeln();
 
     // debug start
     // dúvida: como usar essa função? porque, do modo como eu a usei aqui sempre será true
+    // stackSize := stack.Posicao; // sempre aponta o topo!
     // stackDebbuger := IsFull(stack, stackSize);
     // writeln(stackDebbuger);
     // debug end
