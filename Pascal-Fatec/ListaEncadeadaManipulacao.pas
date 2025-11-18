@@ -108,7 +108,7 @@ begin
 end;
 
 {LISTS - FUNCTIONS AND PROCEDURES - PascalCase}
-{Aula #10 - return the amount of elements in the list}
+{Aula 10 - return the amount of elements in the list}
 function ContaListaEncadeada(listaEncadeada: EnderecoNo): integer;
 var
     noAuxiliar: EnderecoNo;
@@ -164,7 +164,7 @@ begin
     end;
 end;
 
-{Aula #11 - insere no fim da lista encadeada}
+{Aula 11 - insere no fim da lista encadeada}
 procedure InsereNoFim(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo, noAuxiliar: EnderecoNo;
@@ -185,7 +185,7 @@ begin
     end;
 end;
 
-{Aula #12 - insere no inicio da lista encadeada}
+{Aula 12 - insere no inicio da lista encadeada}
 procedure InsereNoInicio(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo: EnderecoNo;
@@ -204,7 +204,7 @@ begin
     end;
 end;
 
-{Aula #12 - insere número dado no início e no fim da lista e conta os nós}
+{Aula 12 - insere número dado no início e no fim da lista e conta os nós}
 function InsereInicioFimConta(var listaEncadeada: EnderecoNo; n: integer): integer;
 var
     // precisa criar mais um nó para não endereçar a lista em círculos
@@ -258,16 +258,18 @@ begin
     InsereInicioFimConta := contador;
 end;
 
-{Aula #13 - insere na quarta posição ou antes - o que vier primeiro}
+{Aula 13 - insere na quarta posição ou antes - o que vier primeiro}
 procedure InsereQuarta(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo, noAuxiliar, noSecundario: EnderecoNo;
     contador: integer;
 begin
-    // prepara o novo nó
+    // prepara os novos nós
     new(novoNo);
     novoNo^.Dado := n;
     novoNo^.ProximoNo := nil;
+    new(noSecundario);
+    noSecundario := nil;
     noAuxiliar := listaEncadeada;
     contador := 1;
     if (noAuxiliar = nil) then
@@ -293,12 +295,70 @@ begin
         end
         else
         begin
-            // recebe o endereço do quarto nó atual
+            // recebe o restante da lista
             noSecundario := noAuxiliar^.ProximoNo;
             // endereço do quarto nó recebe o novo nó
             noAuxiliar^.ProximoNo := novoNo;
             // novo nó recebe o restante da lista
             novoNo^.ProximoNo := noSecundario;
+        end;
+    end;
+end;
+
+{Aula 13 - Insere novo nó após primeiro nó cujo conteúdo seja par}
+procedure InsereAposPar(var listaEncadeada: EnderecoNo; n: integer);
+var
+    novoNo, noAuxiliar, noSecundario: EnderecoNo;
+    contador: integer;
+begin
+    // prepara os novos nós
+    new(novoNo);
+    novoNo^.Dado := n;
+    novoNo^.ProximoNo := nil;
+    new(noSecundario);
+    noSecundario := nil;
+    noAuxiliar := listaEncadeada;
+    if (noAuxiliar = nil) then
+    begin
+        noAuxiliar := novoNo;
+        listaEncadeada := noAuxiliar;
+    end
+    else
+    begin
+        // percorre a lista dos nós cujo endereço seguinte não seja nil
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            // sai do loop se o conteúdo do nó for par
+            if ((noAuxiliar^.Dado Mod 2) = 0) then
+            begin
+                break;
+            end;
+            noAuxiliar := noAuxiliar^.ProximoNo;
+        end;
+        // após o fim do loop, o nó auxiliar é o nó procurado?
+        if ((noAuxiliar^.Dado Mod 2) = 0) then
+        begin
+            // True! recebe novo nó: Próximo nó é nil => recebe o novo nó
+            if (noAuxiliar^.ProximoNo = nil) then
+            begin
+                noAuxiliar^.ProximoNo := novoNo
+            end
+            else
+            begin
+                // Próximo nó não é nil => nó secundário recebe o restante da
+                // lista
+                noSecundario := noAuxiliar^.ProximoNo;
+                // nó referência recebe o novo nó
+                noAuxiliar^.ProximoNo := novoNo;
+                // novo nó recebe o restante da lista
+                novoNo^.ProximoNo := noSecundario;
+            end;
+        end
+        else
+        begin
+            writeln('A lista não tem nós com valores pares.');
+            writeln('Nada foi acrescentado.');
+            writeln();
         end;
     end;
 end;
@@ -377,8 +437,8 @@ end;
 // MAIN PROGRAM
 Begin
     lista := nil;
-    InsereNoFim(lista, 42);
-    // InsereNoFim(lista, 63);
+    InsereNoFim(lista, 51);
+    InsereNoFim(lista, 61);
     // ImprimeListaEncadeada(lista);
     // InsereNoFim(lista, -17);
     // InsereNoFim(lista, -2);
@@ -457,7 +517,9 @@ Begin
     // ImprimePilha(stack);
     // writeln();
 
-    InsereQuarta(lista, 1024);
+    InsereQuarta(lista, 1023);
+
+    InsereAposPar(lista, 48);
 
     ImprimeListaEncadeada(lista);
     writeln();
