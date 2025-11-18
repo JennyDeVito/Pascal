@@ -1,51 +1,176 @@
-program TotalNodosNegativos;
+program ListaEncadeadaManipulacao;
 
-uses crt;
+// fix en_US language
+// todo document what this program does and the usage
+// todo link each program with the class where it were asked
 
-type 
+// explanation: disabled 'cause the documentation said it doesn't like Linux
+// uses crt;
+
+// tsc funcions and procedures
+{   Init
+    IsEmpty
+    IsFull
+    Push
+    Pop
+    ImprimePilha
+    ContaLista
+    ContaNegativosLista
+    InsereNoFim
+    InsereNoInicio
+    ImprimeListaEncadeada
+    PreencheListaComPilha
+}
+
+// explanation 1: fpc isn't accepting node and stack declared together
+// explanation 1/2: this program is about nodes but it has a routine that uses
+// explanation 2/2: uses stack
+{TYPE - PascalCase}
+type // node
     EnderecoNo = ^No;
     No = record
-        Dado = integer;
-        ProximoNo = EnderecoNo;
-    Vetor = array[1..100] of integer;
-    Pilha = record
-        Posicao = integer;
-        Elementos = Vetor;
+        Dado : integer;
+        ProximoNo : EnderecoNo;
 end;
 
-{declarar variaveis} {camelCase}
-var
-    inicioLista: EnderecoNo;
-    stack: Pilha;
-    entrada: integer;
+type // stack
+    Vetor = array[1..100] of integer;
+    Pilha = record
+        Posicao : integer;
+        Elementos : Vetor;
+end;
 
-// PROCEDURES {PascalCase}
-{inicial pilha}
-procedure Init(var p1: Pilha);
+{VARIABLES TO USE IN THE PROGRAM - camelCase}
+var
+    lista: EnderecoNo;
+    stack: Pilha;
+    stackSize, stackMaximumSize, tamanhoLista: integer;
+    stackDebbuger: boolean;
+    // a: integer; // debug
+
+{STACK - FUNCTIONS AND PROCEDURES - PascalCase}
+{inicia pilha}
+procedure Init(var p: Pilha);
 begin
-    p1.Posicao := 0;
+    p.Posicao := 0;
+end;
+
+function IsEmpty(p: Pilha): boolean;
+begin
+    if (p.Posicao = 0) then
+        IsEmpty := true
+    else
+        IsEmpty := false;
+end;
+
+function IsFull(p: Pilha; n: integer): boolean;
+begin
+    if (p.Posicao = n) then
+        IsFull := true
+    else
+        IsFull := false;
 end;
 
 {insere inteiro na pilha}
-procedure Push(var p2: Pilha; numero1: integer);
+procedure Push(var p: Pilha; n: integer);
 begin
-    p2.Posicao := p2.Posicao + 1;
-    p2.Elementos[p2.Posicao] := numero1;
+    p.Posicao := p.Posicao + 1;
+    p.Elementos[p.Posicao] := n;
 end;
 
 {retira elemento da pilha}
-procedure Pop(var p3: Pilha);
+procedure Pop(var p: Pilha);
 begin
-    p3.Posicao := p3.Posicao - 1;
+    p.Posicao := p.Posicao - 1;
 end;
 
-{insere no fim da lista encadeada}
-procedure InsereNoFim(var listaEncadeada: EnderecoNo; numero2: integer);
+{imprime toda a pilha sem esvaziá-la}
+procedure ImprimePilha(p: Pilha);
+var
+    i, tamanhoPilha: integer;
+begin
+    if (IsEmpty(p) = true) then
+    begin
+        writeln('A pilha está vazia!')
+    end
+    else
+    begin
+        tamanhoPilha := p.Posicao;
+        for i := tamanhoPilha downto 1 do
+        begin
+            write('Posição: ');
+            write(p.Posicao);
+            write(' - Valor: ');
+            writeln(p.Elementos[p.Posicao]);
+            p.Posicao := p.Posicao - 1;
+        end;
+    end;
+end;
+
+{LISTS - FUNCTIONS AND PROCEDURES - PascalCase}
+{Aula #10 - return the amount of elements in the list}
+function ContaListaEncadeada(listaEncadeada: EnderecoNo): integer;
+var
+    noAuxiliar: EnderecoNo;
+    contador: integer;
+begin
+    noAuxiliar := listaEncadeada;
+    contador := 0;
+    if (noAuxiliar = nil) then
+    begin
+        ContaListaEncadeada := -1
+        // writeln('A lista está vazia!')
+    end
+    else
+    begin
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            contador := contador + 1;
+            noAuxiliar := noAuxiliar^.ProximoNo;
+        end;
+        contador := contador + 1;
+        ContaListaEncadeada := contador;
+    end;
+end;
+
+{Conta a quantidade de nós cujo valor é negativo}
+function ContaNegativosLista(listaEncadeada: EnderecoNo): integer;
+var
+    noAuxiliar : EnderecoNo;
+    contador : integer;
+begin
+    noAuxiliar := listaEncadeada;
+    contador := 0;
+    if (noAuxiliar = nil) then
+    begin
+        ContaNegativosLista := -1
+        // writeln('A lista está vazia!');
+    end
+    else
+    begin
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            if (noAuxiliar^.Dado < 0) then
+            begin
+                contador := contador + 1;
+            end;
+            noAuxiliar := noAuxiliar^.ProximoNo;
+        end;
+        if (noAuxiliar^.Dado < 0) then
+        begin
+            contador := contador + 1;
+        end;
+        ContaNegativosLista := contador;
+    end;
+end;
+
+{Aula #11 - insere no fim da lista encadeada}
+procedure InsereNoFim(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo, noAuxiliar: EnderecoNo;
 begin
     new(novoNo);
-    novoNo^.Dado := numero2;
+    novoNo^.Dado := n;
     novoNo^.ProximoNo := nil;
     if (listaEncadeada = nil) then
         listaEncadeada := novoNo
@@ -60,7 +185,114 @@ begin
     end;
 end;
 
-{preenche lista com pilha}
+{Aula #12 - insere no inicio da lista encadeada}
+procedure InsereNoInicio(var listaEncadeada: EnderecoNo; n: integer);
+var
+    novoNo: EnderecoNo;
+begin
+    new(novoNo);
+    novoNo^.Dado := n;
+    novoNo^.ProximoNo := nil;
+    if (listaEncadeada = nil) then
+    begin
+        listaEncadeada := novoNo
+    end
+    else
+    begin
+        novoNo^.ProximoNo := listaEncadeada;
+        listaEncadeada := novoNo;
+    end;
+end;
+
+{Aula #12 - insere número dado no início e no fim da lista e conta os nós}
+function InsereInicioFimConta(var listaEncadeada: EnderecoNo; n: integer): integer;
+var
+    // precisa criar mais um nó para não endereçar a lista em círculos
+    novoNo, noAuxiliar, noSecundario: EnderecoNo;
+    contador: integer;
+begin
+    // passa a head principal para a head auxiliar (lista de manipulação)
+    noAuxiliar := listaEncadeada;
+    // inicia o contador
+    contador := 0;
+    // cria os novos nós, atribui n para dado e nil para próximo nó
+    // explicação 1/3: um nó deve ser o primeiro e outro deve ser o último da
+    // explicação 2/3: lista se só criar um nó, a lista vai iniciar e terminar
+    // explicação 3/3: no mesmo endereço de memória
+    new(novoNo);
+    novoNo^.Dado := n;
+    novoNo^.ProximoNo := nil;
+    new(noSecundario);
+    noSecundario^.Dado := n;
+    noSecundario^.ProximoNo := nil;
+    // se a lista encadeada estiver vazia
+    if (noAuxiliar = nil) then
+    begin
+        // o head auxiliar recebe o novo nó onde o proximo endereço é nil
+        noAuxiliar := novoNo;
+        // o segundo endereço do head recebe o novo nó
+        noAuxiliar^.ProximoNo := noSecundario;
+        // o head principal recebe a head auxiliar (lista de manipulação)
+        listaEncadeada := noAuxiliar;
+        contador := 2;
+    end
+        // else (noAuxiliar = nil) = false => lista já tem elementos
+    else
+    begin
+        // passa pelos nós até que o último próximo endereço seja nil
+        contador := 1;
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            noAuxiliar := noAuxiliar^.ProximoNo;
+            contador := contador + 1;
+        end;
+        // o último nó da lista recebe um dos novos nós
+        noAuxiliar^.ProximoNo := novoNo;
+        contador := contador + 1;
+        // coloca o head principal como segundo endereço no noSecundario
+        noSecundario^.ProximoNo := listaEncadeada;
+        // o head principal recebe o noSecundario para inserir o novo nó
+        listaEncadeada := noSecundario;
+        contador := contador + 1;
+    end;
+    InsereInicioFimConta := contador;
+end;
+
+{imprime lista encadeada}
+procedure ImprimeListaEncadeada(listaEncadeada: EnderecoNo);
+var
+    noAuxiliar : EnderecoNo;
+    contador : integer;
+begin
+    noAuxiliar := listaEncadeada;
+    contador := 0;
+    if (noAuxiliar = nil) then
+    begin
+        writeln('A lista está vazia!');
+    end
+    else
+    begin
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            contador := contador + 1;
+            write('Nó ');
+            write(contador);
+            write(': ');
+            writeln(noAuxiliar^.Dado);
+            noAuxiliar := noAuxiliar^.ProximoNo;
+        end;
+        contador := contador + 1;
+        write('Nó ');
+        write(contador);
+        write(': ');
+        writeln(noAuxiliar^.Dado);
+        writeln('Fim da lista encadeada.');
+        writeln();
+    end;
+end;
+
+{STACK + LISTS - FUNCTIONS AND PROCEDURES - PascalCase}
+{procedure that empties a stack to fill a list}
 procedure PreencheListaComPilha(var p: Pilha; listaEncadeada: EnderecoNo);
 var
     novoNo, noAuxiliar: EnderecoNo;
@@ -86,53 +318,87 @@ begin
     end;
 end;
 
-{insere no inicio da lista encadeada}
-procedure InsereNoInicio(var listaEncadeada: EnderecoNo; numero3: integer);
-var
-    novoNo: EnderecoNo;
-begin
-
-    new(novoNo);
-    novoNo^.Dado := numero3;
-    novoNo^.ProximoNo := listaEncadeada;
-
-end;
-
-// FUNCTIONS {PascalCase}
-function IsEmpty(p4: Pilha): boolean;
-begin
-    if (p4.Posicao = 0) then
-        IsEmpty := true
-    else
-        IsEmpty := false;
-end;
-
-function IsFull(p5: Pilha, numeron: integer): boolean;
-begin
-    if (p5.Posicao = numeron) then
-        IsFull := true
-    else
-        IsFull := false;
-end;
-
-{Conta os nós com dados negativos}
-function ContaNegativos(listaEncadeada: EnderecoNo):integer;
-var
-    noAuxiliar: EnderecoNo;
-    contador: integer;
-begin
-    noAuxiliar := listaEncadeada;
-    contador := 0;
-    while(noAuxiliar <> nil) do
-    begin
-        if (noAuxiliar^.Dado < 0) then
-            contador := contador + 1;
-        noAuxiliar := noAuxiliar^.ProximoNo;
-    end;
-    ContaNegativos := contador;
-end;
-
 // MAIN PROGRAM
 Begin
-    
-End;
+    lista := nil;
+    InsereNoFim(lista, 42);
+    InsereNoFim(lista, 63);
+    ImprimeListaEncadeada(lista);
+    InsereNoFim(lista, -17);
+    InsereNoFim(lista, -2);
+    ImprimeListaEncadeada(lista);
+    InsereNoInicio(lista, 5);
+    InsereNoInicio(lista, 25);
+    InsereNoInicio(lista, 0);
+    InsereNoFim(lista, 1);
+    InsereNoFim(lista, 5);
+    InsereNoFim(lista, 205);
+    ImprimeListaEncadeada(lista);
+    writeln();
+
+    if ((ContaNegativosLista(lista) = -1)) then
+    begin
+        writeln('A lista está vazia!');
+        writeln();
+    end
+    else if ((ContaNegativosLista(lista) = 0)) then
+    begin
+        writeln('A lista não tem nós negativos.');
+        writeln();
+    end
+    else
+    begin
+        write('A lista possui: ');
+        writeln(ContaNegativosLista(lista), ' nós negativos.');
+        writeln();
+    end;
+
+    if ((ContaListaEncadeada(lista) = -1)) then
+    begin
+        writeln('A lista está vazia!');
+        writeln();
+    end
+    else
+    begin
+        write('A lista possui: ');
+        writeln(ContaListaEncadeada(lista), ' nós.');
+        writeln();
+    end;
+
+    tamanhoLista := InsereInicioFimConta(lista, 18);
+
+    ImprimeListaEncadeada(lista);
+    writeln();
+
+    writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
+    writeln();
+
+    // Init(stack);
+    // stackSize := 0;
+    // stackMaximumSize := 100;
+    // Push(stack, 8);
+    // Push(stack, 12);
+    // Push(stack, 46);
+    // Push(stack, 98);
+    // Push(stack, 0);
+    // Push(stack, 21);
+    // Push(stack, 9);
+    // Push(stack, -11);
+    // Push(stack, -1);
+    // Push(stack, -3);
+    // stackSize := stack.Posicao;
+    // writeln('Tamanho da pilha: ', stackSize);
+    // ImprimePilha(stack);
+
+
+    // debug start
+    // dúvida: como usar essa função? porque, do modo como eu a usei aqui sempre será true
+    // stackDebbuger := IsFull(stack, stackSize);
+    // writeln(stackDebbuger);
+    // debug end
+
+    // debug testing 'for...downto' command
+    // for a := 10 downto 1 do
+    //     writeln('Counting down: ', a);
+    // debug testing 'for...downto' command ends
+End.
