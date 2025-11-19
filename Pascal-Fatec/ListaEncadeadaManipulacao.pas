@@ -1,6 +1,6 @@
 program ListaEncadeadaManipulacao;
 
-// fix en_US language
+// fix transtate to en_US
 // todo document what this program does and the usage
 // todo link each program with the class where it were asked
 
@@ -21,6 +21,8 @@ program ListaEncadeadaManipulacao;
     InsereInicioFimConta
     InsereQuarta
     InsereAposPar
+    ExcluiFinalLista
+    ExcluiPrimeiroNegativo // bug
     ImprimeListaEncadeada
     EsvaziaPilhaParaLista
 }
@@ -118,6 +120,7 @@ var
     noAuxiliar: EnderecoNo;
     contador: integer;
 begin
+    new(noAuxiliar);
     noAuxiliar := listaEncadeada;
     contador := 0;
     if (noAuxiliar = nil) then
@@ -143,6 +146,7 @@ var
     noAuxiliar : EnderecoNo;
     contador : integer;
 begin
+    new(noAuxiliar);
     noAuxiliar := listaEncadeada;
     contador := 0;
     if (noAuxiliar = nil) then
@@ -173,6 +177,7 @@ procedure InsereNoFim(var listaEncadeada: EnderecoNo; n: integer);
 var
     novoNo, noAuxiliar: EnderecoNo;
 begin
+    new(noAuxiliar);
     new(novoNo);
     novoNo^.Dado := n;
     novoNo^.ProximoNo := nil;
@@ -229,6 +234,7 @@ begin
     new(noSecundario);
     noSecundario^.Dado := n;
     noSecundario^.ProximoNo := nil;
+    new(noAuxiliar);
     // se a lista encadeada estiver vazia
     if (noAuxiliar = nil) then
     begin
@@ -274,6 +280,7 @@ begin
     novoNo^.ProximoNo := nil;
     new(noSecundario);
     noSecundario := nil;
+    new(noAuxiliar);
     noAuxiliar := listaEncadeada;
     contador := 1;
     if (noAuxiliar = nil) then
@@ -320,6 +327,7 @@ begin
     novoNo^.ProximoNo := nil;
     new(noSecundario);
     noSecundario := nil;
+    new(noAuxiliar);
     noAuxiliar := listaEncadeada;
     if (noAuxiliar = nil) then
     begin
@@ -371,6 +379,9 @@ procedure ExcluiFinalLista(var listaEncadeada: EnderecoNo);
 var
     inicioLista, noAuxiliar, noSecundario: EnderecoNo;
 begin
+    new(noAuxiliar);
+    new(inicioLista);
+    new(noSecundario);
     inicioLista := listaEncadeada;
     if (inicioLista = nil) then
     begin
@@ -424,12 +435,171 @@ begin
     end;
 end;
 
+// {Aula 14 - Exclui o primeiro negativo da lista - // BUG NOT WORKING!!!}
+// procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
+// var
+//     inicioLista, noAuxiliar, noSecundario: EnderecoNo;
+// begin
+//     new(noAuxiliar);
+//     new(inicioLista);
+//     new(noSecundario);
+//     inicioLista := listaEncadeada;
+//     if (inicioLista = nil) then
+//     begin
+//         writeln('A lista está vazia!')
+//     end
+//     else
+//     begin
+//         if (iniciolista^.ProximoNo = nil) then
+//         begin
+//             if (inicioLista^.Dado < 0) then
+//             begin
+//                 inicioLista := nil;
+//                 listaEncadeada := inicioLista;
+//                 dispose(inicioLista);
+//             end;
+//         end
+//         else
+//         begin
+//             noAuxiliar := iniciolista^.ProximoNo;
+//             if (noAuxiliar^.ProximoNo = nil) then
+//             begin
+//                 iniciolista^.ProximoNo := nil;
+//                 dispose(noAuxiliar);
+//             end
+//             else
+//             begin
+//                 noSecundario := noAuxiliar^.ProximoNo;
+//                 // se o terceiro nó for o último
+//                 if (noSecundario^.ProximoNo = nil) then
+//                 begin
+//                     noAuxiliar^.ProximoNo := nil;
+//                     dispose(noSecundario);
+//                 end
+//                 else
+//                 begin
+//                     // se o terceiro não for o último um laço percorre a lista
+//                     while (noSecundario^.ProximoNo <> nil) do
+//                     begin
+//                         noSecundario := noSecundario^.ProximoNo;
+//                         noAuxiliar := noAuxiliar^.ProximoNo;
+//                     end;
+//                     // o laço termina quando noSecundario^.ProximoNo = nil, então
+//                     // o penúltimo nó perde a referência para o último nó
+//                     noAuxiliar^.ProximoNo := nil;
+//                     // o último nó é apagado
+//                     dispose(noSecundario);
+//                 end;
+//             end;
+//         end;
+//     end;
+// end;
+
+{Aula 14 - apaga o primeiro nó de valor negativo}
+// FIXME deletes 1st and 2nd ok, 4th+ deletes whole list
+procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
+var
+    inicioLista, noAuxiliar, noSecundario: EnderecoNo;
+    negativa: string;
+begin
+    negativa := 'Não há valores negativos na lista';
+    new(inicioLista);
+    new(noAuxiliar);
+    new(noSecundario);
+    inicioLista := listaEncadeada;
+    if (inicioLista = nil) then
+    begin
+        writeln('A lista está vazia!');
+    end
+    else
+    begin
+        if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo = nil) then
+        begin
+            inicioLista := nil;
+            dispose(inicioLista);
+            listaEncadeada := inicioLista;
+        end
+        else if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo <> nil) then
+        begin
+            noAuxiliar := inicioLista^.ProximoNo;
+            listaEncadeada := noAuxiliar;
+            dispose(inicioLista);
+        end
+        else if (inicioLista^.ProximoNo = nil) then
+        begin
+            writeln(negativa);
+        end
+        else
+        begin
+            noAuxiliar := inicioLista^.ProximoNo;
+            if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo = nil) then
+            begin
+                inicioLista^.ProximoNo := nil;
+                dispose(noAuxiliar);
+            end
+            else if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo <> nil) then
+            begin
+                noSecundario := noAuxiliar^.ProximoNo;
+                inicioLista^.ProximoNo := noSecundario;
+                dispose(noAuxiliar);
+            end
+            else if (noAuxiliar^.ProximoNo = nil) then
+            begin
+                writeln(negativa);
+            end
+            else
+            begin
+                if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo = nil) then
+                begin
+                    noAuxiliar^.ProximoNo := nil;
+                    dispose(noSecundario);
+                end
+                else if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo <> nil) then
+                begin
+                    noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
+                    dispose(noSecundario);
+                end
+                else if (noSecundario^.ProximoNo = nil) then
+                begin
+                    writeln(negativa);
+                end
+                else
+                begin
+                    while (noSecundario^.Dado >= 0) do
+                    begin
+                        if (noSecundario^.ProximoNo = nil) then
+                        begin
+                            break;
+                        end
+                        else
+                        begin
+                            noSecundario := noSecundario^.ProximoNo;
+                            noAuxiliar := noAuxiliar^.ProximoNo;
+                        end;
+                    end;
+                    if (noSecundario^.ProximoNo = nil) then
+                    begin
+                        noAuxiliar^.ProximoNo := nil;
+                        dispose(noSecundario);
+                    end
+                    else
+                    begin
+                        noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
+                        dispose(noSecundario);
+                    end;
+                end;
+            end;
+        end;
+    end;
+end;
+
 {imprime lista encadeada}
 procedure ImprimeListaEncadeada(listaEncadeada: EnderecoNo);
 var
     noAuxiliar : EnderecoNo;
     contador : integer;
 begin
+    new(noAuxiliar);
     noAuxiliar := listaEncadeada;
     contador := 0;
     if (noAuxiliar = nil) then
@@ -472,6 +642,7 @@ begin
         begin
             // crie um novo nó, acrescente o topo da pilha e nil no próximo nó
             new(novoNo);
+            new(noAuxiliar);
             novoNo^.Dado := p.Elementos[p.Posicao];
             novoNo^.ProximoNo := nil;
             // nó auxiliar recebe o head da lista principal
@@ -501,12 +672,9 @@ Begin
     InsereNoFim(lista, 51);
     InsereNoFim(lista, 61);
     // // ImprimeListaEncadeada(lista);
-    InsereNoFim(lista, -17);
+    InsereNoFim(lista, 17);
     InsereNoFim(lista, -2);
-    // ImprimeListaEncadeada(lista);
-    InsereNoInicio(lista, 5);
-    InsereNoInicio(lista, 25);
-    InsereNoInicio(lista, 0);
+    // // ImprimeListaEncadeada(lista);
     InsereNoFim(lista, 1);
     InsereNoFim(lista, 5);
     InsereNoFim(lista, 205);
@@ -580,15 +748,12 @@ Begin
 
     // InsereQuarta(lista, 1023);
 
-    InsereAposPar(lista, 48);
+    ImprimeListaEncadeada(lista);
+
+    // ExcluiFinalLista(lista);
+    ExcluiPrimeiroNegativo(lista);
 
     ImprimeListaEncadeada(lista);
-    writeln();
-
-    ExcluiFinalLista(lista);
-
-    ImprimeListaEncadeada(lista);
-    writeln();
 
     // debug start
     // dúvida: como usar essa função? porque, do modo como eu a usei aqui sempre será true
