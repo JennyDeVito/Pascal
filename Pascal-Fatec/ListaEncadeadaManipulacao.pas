@@ -48,9 +48,9 @@ end;
 {VARIABLES TO USE IN THE PROGRAM - camelCase}
 var
     lista: EnderecoNo;
-    // tamanhoLista: integer;
+    tamanhoLista: integer;
     stack: Pilha;
-    // stackSize, stackMaximumSize: integer;
+    stackSize, stackMaximumSize: integer;
     // stackDebbuger: boolean;
     // a: integer; // debug
 
@@ -111,6 +111,7 @@ begin
             p.Posicao := p.Posicao - 1;
         end;
     end;
+    writeln();
 end;
 
 {LISTS - FUNCTIONS AND PROCEDURES - PascalCase}
@@ -266,6 +267,66 @@ begin
         contador := contador + 1;
     end;
     InsereInicioFimConta := contador;
+end;
+
+{P2 - insere número dado no fim da lista e retorna quantidadede de nós pares}
+function InsereFimContaPares(var listaEncadeada: EnderecoNo; n: integer): integer;
+var
+    // precisa criar mais um nó para não endereçar a lista em círculos
+    novoNo, noAuxiliar: EnderecoNo;
+    contador: integer;
+begin
+    // passa a head principal para a head auxiliar (lista de manipulação)
+    noAuxiliar := listaEncadeada;
+    // inicia o contador
+    contador := 0;
+    // cria o novos nó, atribui n para dado e nil para próximo nó
+    new(novoNo);
+    novoNo^.Dado := n;
+    novoNo^.ProximoNo := nil;
+    // se a lista encadeada estiver vazia
+    if (noAuxiliar = nil) then
+    begin
+        // o head auxiliar recebe o novo nó onde o proximo endereço é nil
+        noAuxiliar := novoNo;
+        // o head principal recebe a head auxiliar (lista de manipulação)
+        listaEncadeada := noAuxiliar;
+        // se o conteúdo do nó for par contador = 1
+        if (noAuxiliar^.Dado Mod 2 = 0) then
+        begin
+            contador := 1;
+        end;
+    end
+        // else (noAuxiliar = nil) = false => lista já tem elementos
+    else
+    begin
+        // passa pelos nós até que o último próximo endereço seja nil
+        while (noAuxiliar^.ProximoNo <> nil) do
+        begin
+            // se o conteúdo do nó for par contador recebe + 1
+            if (noAuxiliar^.Dado Mod 2 = 0) then
+            begin
+                contador := contador + 1;
+            end;
+            // nó auxiliar passa para o próximo nó
+            noAuxiliar := noAuxiliar^.ProximoNo;
+        end;
+        {o último nó da lista recebe o nó onde o próximo endereço é nil
+        se o conteúdo do nó for par contador recebe + 1}
+        if (noAuxiliar^.Dado Mod 2 = 0) then
+        begin
+            contador := contador + 1;
+        end;
+        // o último nó recebe o novo nó
+        noAuxiliar^.ProximoNo := novoNo;
+        // se o conteúdo do novo nó for par contador recebe + 1
+        if (novoNo^.Dado Mod 2 = 0) then
+        begin
+            contador := contador + 1;
+        end;
+        // lista chegou ao fim
+    end;
+    InsereFimContaPares := contador;
 end;
 
 {Aula 13 - insere na quarta posição ou antes - o que vier primeiro}
@@ -435,7 +496,256 @@ begin
     end;
 end;
 
-// {Aula 14 - Exclui o primeiro negativo da lista - // BUG NOT WORKING!!!}
+// {Aula 14 - Esqueleto para percorrer uma lista pelo fim}
+// procedure BoilerplateVarreLista(var listaEncadeada: EnderecoNo);
+// var
+//     inicioLista, noAuxiliar, noSecundario: EnderecoNo;
+// begin
+//     inicioLista := listaEncadeada;
+//     if (inicioLista = nil) then
+//     begin
+//         writeln('A lista está vazia!')
+//     end
+//     else
+//     begin
+//         // verifica se o primeiro nó é o único da lista
+//         if (iniciolista^.ProximoNo = nil) then
+//         begin
+//             // do something
+//         end
+//         // senão joga o segundo nó no nó auxiliar
+//         else
+//         begin
+//             noAuxiliar := iniciolista^.ProximoNo;
+//             // se o segundo nó for o último
+//             if (noAuxiliar^.ProximoNo = nil) then
+//             begin
+//                 // do  something
+//             end
+//             else
+//             begin
+//                 noSecundario := noAuxiliar^.ProximoNo;
+//                 // se o terceiro nó for o último
+//                 if (noSecundario^.ProximoNo = nil) then
+//                 begin
+//                     // do something
+//                 end
+//                 else
+//                 begin
+//                     // se o terceiro não for o último um laço percorre a lista
+//                     while (noSecundario^.ProximoNo <> nil) do
+//                     begin
+//                         noSecundario := noSecundario^.ProximoNo;
+//                         noAuxiliar := noAuxiliar^.ProximoNo;
+//                     end;
+//                     // o laço termina quando noSecundario^.ProximoNo = nil, então aqui temos o último nó
+//                     // do something
+//                 end;
+//             end;
+//         end;
+//     end;
+// end;
+
+
+{Aula 14 - apaga o primeiro nó de valor negativo VERSÃO 2.5}
+// FIXME
+procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
+var
+    inicioLista, noAnterior, noAtual: EnderecoNo;
+    negativa: string;
+begin
+    negativa := 'Não há valores negativos na lista';
+    new(inicioLista);
+    new(noAnterior);
+    new(noAtual);
+    inicioLista := listaEncadeada;
+    if (inicioLista = nil) then
+    begin
+        writeln('A lista está vazia!');
+    end
+    else
+    begin
+        if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo = nil) then
+        begin
+            inicioLista := nil;
+            dispose(inicioLista);
+            listaEncadeada := inicioLista;
+        end
+        else if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo <> nil) then
+        begin
+            noAnterior := inicioLista^.ProximoNo;
+            listaEncadeada := noAnterior;
+            dispose(inicioLista);
+        end
+        else if (inicioLista^.Dado >= 0) and (inicioLista^.ProximoNo = nil) then
+        begin
+            writeln(negativa);
+        end
+        else
+        begin
+            noAnterior := inicioLista^.ProximoNo;
+            if (noAnterior^.Dado < 0) and (noAnterior^.ProximoNo = nil) then
+            begin
+                inicioLista^.ProximoNo := nil;
+                dispose(noAnterior);
+            end
+            else if (noAnterior^.Dado < 0) and (noAnterior^.ProximoNo <> nil) then
+            begin
+                noAtual := noAnterior^.ProximoNo;
+                inicioLista^.ProximoNo := noAtual;
+                dispose(noAnterior);
+            end
+            else if (noAnterior^.Dado >= 0) and(noAnterior^.ProximoNo = nil) then
+            begin
+                writeln(negativa);
+            end
+            else
+            begin
+                if (noAtual^.Dado < 0) and (noAtual^.ProximoNo = nil) then
+                begin
+                    noAnterior^.ProximoNo := nil;
+                    dispose(noAtual);
+                end
+                else if (noAtual^.Dado < 0) and (noAtual^.ProximoNo <> nil) then
+                begin
+                    noAnterior^.ProximoNo := noAtual^.ProximoNo;
+                    dispose(noAtual);
+                end
+                else
+                begin
+                    // só sai do loop se o valor for negativo ou chegar em nil
+                    while (noAtual^.Dado >= 0) do
+                    begin
+                        if (noAtual^.ProximoNo = nil) then
+                        begin
+                            break;
+                        end;
+                        noAtual := noAtual^.ProximoNo;
+                        noAnterior := noAnterior^.ProximoNo;
+                    end;
+                    // verifica se o valor é negativo
+                    if (noAtual^.Dado < 0) then
+                    begin
+                        if (noAtual^.ProximoNo = nil) then
+                        begin
+                            noAnterior^.ProximoNo := nil;
+                            dispose(noAtual);
+                        end
+                        else
+                        begin
+                            noAnterior^.ProximoNo := noAtual^.ProximoNo;
+                            dispose(noAtual);
+                        end;
+                    end
+                    else
+                    begin
+                        writeln(negativa);
+                    end;
+                end;
+            end;
+        end;
+    end;
+end;
+
+{Aula 14 - apaga o primeiro nó de valor negativo VERSÃO 2}
+// FIXME deletes 1st and 2nd ok, 4th+ deletes whole list
+// procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
+// var
+//     inicioLista, noAuxiliar, noSecundario: EnderecoNo;
+//     negativa: string;
+// begin
+//     negativa := 'Não há valores negativos na lista';
+//     new(inicioLista);
+//     new(noAuxiliar);
+//     new(noSecundario);
+//     inicioLista := listaEncadeada;
+//     if (inicioLista = nil) then
+//     begin
+//         writeln('A lista está vazia!');
+//     end
+//     else
+//     begin
+//         if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo = nil) then
+//         begin
+//             inicioLista := nil;
+//             dispose(inicioLista);
+//             listaEncadeada := inicioLista;
+//         end
+//         else if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo <> nil) then
+//         begin
+//             noAuxiliar := inicioLista^.ProximoNo;
+//             listaEncadeada := noAuxiliar;
+//             dispose(inicioLista);
+//         end
+//         else if (inicioLista^.ProximoNo = nil) then
+//         begin
+//             writeln(negativa);
+//         end
+//         else
+//         begin
+//             noAuxiliar := inicioLista^.ProximoNo;
+//             if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo = nil) then
+//             begin
+//                 inicioLista^.ProximoNo := nil;
+//                 dispose(noAuxiliar);
+//             end
+//             else if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo <> nil) then
+//             begin
+//                 noSecundario := noAuxiliar^.ProximoNo;
+//                 inicioLista^.ProximoNo := noSecundario;
+//                 dispose(noAuxiliar);
+//             end
+//             else if (noAuxiliar^.ProximoNo = nil) then
+//             begin
+//                 writeln(negativa);
+//             end
+//             else
+//             begin
+//                 if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo = nil) then
+//                 begin
+//                     noAuxiliar^.ProximoNo := nil;
+//                     dispose(noSecundario);
+//                 end
+//                 else if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo <> nil) then
+//                 begin
+//                     noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
+//                     dispose(noSecundario);
+//                 end
+//                 else if (noSecundario^.ProximoNo = nil) then
+//                 begin
+//                     writeln(negativa);
+//                 end
+//                 else
+//                 begin
+//                     while (noSecundario^.Dado >= 0) do
+//                     begin
+//                         if (noSecundario^.ProximoNo = nil) then
+//                         begin
+//                             break;
+//                         end
+//                         else
+//                         begin
+//                             noSecundario := noSecundario^.ProximoNo;
+//                             noAuxiliar := noAuxiliar^.ProximoNo;
+//                         end;
+//                     end;
+//                     if (noSecundario^.ProximoNo = nil) then
+//                     begin
+//                         noAuxiliar^.ProximoNo := nil;
+//                         dispose(noSecundario);
+//                     end
+//                     else
+//                     begin
+//                         noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
+//                         dispose(noSecundario);
+//                     end;
+//                 end;
+//             end;
+//         end;
+//     end;
+// end;
+
+// {Aula 14 - Exclui o primeiro negativo da lista VERSÃO 1.5 // Fix ongoing}
 // procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
 // var
 //     inicioLista, noAuxiliar, noSecundario: EnderecoNo;
@@ -495,103 +805,12 @@ end;
 //     end;
 // end;
 
-{Aula 14 - apaga o primeiro nó de valor negativo}
-// FIXME deletes 1st and 2nd ok, 4th+ deletes whole list
-procedure ExcluiPrimeiroNegativo(var listaEncadeada: EnderecoNo);
-var
-    inicioLista, noAuxiliar, noSecundario: EnderecoNo;
-    negativa: string;
-begin
-    negativa := 'Não há valores negativos na lista';
-    new(inicioLista);
-    new(noAuxiliar);
-    new(noSecundario);
-    inicioLista := listaEncadeada;
-    if (inicioLista = nil) then
-    begin
-        writeln('A lista está vazia!');
-    end
-    else
-    begin
-        if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo = nil) then
-        begin
-            inicioLista := nil;
-            dispose(inicioLista);
-            listaEncadeada := inicioLista;
-        end
-        else if (inicioLista^.Dado < 0) and (inicioLista^.ProximoNo <> nil) then
-        begin
-            noAuxiliar := inicioLista^.ProximoNo;
-            listaEncadeada := noAuxiliar;
-            dispose(inicioLista);
-        end
-        else if (inicioLista^.ProximoNo = nil) then
-        begin
-            writeln(negativa);
-        end
-        else
-        begin
-            noAuxiliar := inicioLista^.ProximoNo;
-            if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo = nil) then
-            begin
-                inicioLista^.ProximoNo := nil;
-                dispose(noAuxiliar);
-            end
-            else if (noAuxiliar^.Dado < 0) and (noAuxiliar^.ProximoNo <> nil) then
-            begin
-                noSecundario := noAuxiliar^.ProximoNo;
-                inicioLista^.ProximoNo := noSecundario;
-                dispose(noAuxiliar);
-            end
-            else if (noAuxiliar^.ProximoNo = nil) then
-            begin
-                writeln(negativa);
-            end
-            else
-            begin
-                if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo = nil) then
-                begin
-                    noAuxiliar^.ProximoNo := nil;
-                    dispose(noSecundario);
-                end
-                else if (noSecundario^.Dado < 0) and (noSecundario^.ProximoNo <> nil) then
-                begin
-                    noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
-                    dispose(noSecundario);
-                end
-                else if (noSecundario^.ProximoNo = nil) then
-                begin
-                    writeln(negativa);
-                end
-                else
-                begin
-                    while (noSecundario^.Dado >= 0) do
-                    begin
-                        if (noSecundario^.ProximoNo = nil) then
-                        begin
-                            break;
-                        end
-                        else
-                        begin
-                            noSecundario := noSecundario^.ProximoNo;
-                            noAuxiliar := noAuxiliar^.ProximoNo;
-                        end;
-                    end;
-                    if (noSecundario^.ProximoNo = nil) then
-                    begin
-                        noAuxiliar^.ProximoNo := nil;
-                        dispose(noSecundario);
-                    end
-                    else
-                    begin
-                        noAuxiliar^.ProximoNo := noSecundario^.ProximoNo;
-                        dispose(noSecundario);
-                    end;
-                end;
-            end;
-        end;
-    end;
-end;
+// idea - fazer após consertar o bug do laço
+{Aulas 14 e 15 - exclui todos os nós iguais a zero da lista}
+
+{Aula 15 - exclui nós pares}
+// procedure ExcluiNoPar(var listaEncadeada: EnderecoNo);
+
 
 {imprime lista encadeada}
 procedure ImprimeListaEncadeada(listaEncadeada: EnderecoNo);
@@ -669,89 +888,87 @@ end;
 // MAIN PROGRAM
 Begin
     lista := nil;
-    InsereNoFim(lista, 51);
-    InsereNoFim(lista, 61);
-    // // ImprimeListaEncadeada(lista);
-    InsereNoFim(lista, 17);
-    InsereNoFim(lista, -2);
-    // // ImprimeListaEncadeada(lista);
+    InsereNoFim(lista, -51);
+    InsereNoFim(lista, 3);
+    InsereNoFim(lista, 76);
+    InsereNoFim(lista, -8);
+    InsereNoFim(lista, 0);
     InsereNoFim(lista, 1);
-    InsereNoFim(lista, 5);
-    InsereNoFim(lista, 205);
-    // ImprimeListaEncadeada(lista);
-    // writeln();
-
-    // if ((ContaNegativosLista(lista) = -1)) then
-    // begin
-    //     writeln('A lista está vazia!');
-    //     writeln();
-    // end
-    // else if ((ContaNegativosLista(lista) = 0)) then
-    // begin
-    //     writeln('A lista não tem nós negativos.');
-    //     writeln();
-    // end
-    // else
-    // begin
-    //     write('A lista possui: ');
-    //     writeln(ContaNegativosLista(lista), ' nós negativos.');
-    //     writeln();
-    // end;
-
-    // if ((ContaListaEncadeada(lista) = -1)) then
-    // begin
-    //     writeln('A lista está vazia!');
-    //     writeln();
-    // end
-    // else
-    // begin
-    //     write('A lista possui: ');
-    //     writeln(ContaListaEncadeada(lista), ' nós.');
-    //     writeln();
-    // end;
-
-    // tamanhoLista := InsereInicioFimConta(lista, 18);
-
-    // ImprimeListaEncadeada(lista);
-    // writeln();
-
-    // writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
-    // writeln();
-
-    Init(stack);
-    // stackSize := 0;
-    // stackMaximumSize := 100;
-    // Push(stack, 8);
-    // Push(stack, 12);
-    // Push(stack, 46);
-    // Push(stack, 98);
-    // Push(stack, 0);
-    // Push(stack, 21);
-    // Push(stack, 9);
-    // Push(stack, -11);
-    // Push(stack, -1);
-    // Push(stack, -3);
-    // stackSize := stack.Posicao;
-    // writeln('Tamanho da pilha: ', stackSize);
-    // writeln();
-
-    // ImprimePilha(stack);
-    // writeln();
-
-    // EsvaziaPilhaParaLista(stack, lista);
-
-    // ImprimeListaEncadeada(lista);
-    // writeln();
-
-    // ImprimePilha(stack);
-    // writeln();
-
-    // InsereQuarta(lista, 1023);
+    InsereNoFim(lista, -9);
 
     ImprimeListaEncadeada(lista);
 
+    if ((ContaNegativosLista(lista) = -1)) then
+    begin
+        writeln('A lista está vazia!');
+        writeln();
+    end
+    else if ((ContaNegativosLista(lista) = 0)) then
+    begin
+        writeln('A lista não tem nós negativos.');
+        writeln();
+    end
+    else
+    begin
+        write('A lista possui: ');
+        writeln(ContaNegativosLista(lista), ' nós negativos.');
+        writeln();
+    end;
+
+    if ((ContaListaEncadeada(lista) = -1)) then
+    begin
+        writeln('A lista está vazia!');
+        writeln();
+    end
+    else
+    begin
+        write('A lista possui: ');
+        writeln(ContaListaEncadeada(lista), ' nós.');
+        writeln();
+    end;
+
+    tamanhoLista := InsereInicioFimConta(lista, 18);
+    ImprimeListaEncadeada(lista);
+    writeln('Após inserir 18 no inicio e no fim a lista tem  ', tamanhoLista, ' nós.');
+    writeln();
+
+    Init(stack);
+    stackSize := 0;
+    stackMaximumSize := 100;
+    Push(stack, 8);
+    Push(stack, 12);
+    Push(stack, 46);
+    Push(stack, 98);
+    Push(stack, 0);
+    Push(stack, 21);
+    Push(stack, 9);
+    Push(stack, -11);
+    Push(stack, -1);
+    Push(stack, -3);
+    stackSize := stack.Posicao;
+    writeln('Tamanho da pilha: ', stackSize);
+    writeln();
+
+    ImprimePilha(stack);
+
+    EsvaziaPilhaParaLista(stack, lista);
+
+    ImprimePilha(stack);
+    ImprimeListaEncadeada(lista);
+
+    InsereQuarta(lista, 1023);
+    ImprimeListaEncadeada(lista);
+
     // ExcluiFinalLista(lista);
-    ExcluiPrimeiroNegativo(lista);
+
+    // ExcluiPrimeiroNegativo(lista);
+
+    // InsereNoFim(lista, 20);
+    tamanhoLista := InsereFimContaPares(lista, 4095);
+
+    writeln(tamanhoLista, ' nós pares');
+    writeln();
+    // InsereAposPar(lista, 415);
 
     ImprimeListaEncadeada(lista);
 
